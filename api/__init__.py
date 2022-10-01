@@ -11,8 +11,11 @@ db = SQLAlchemy(app)
 from api.login import login_blueprint
 from api.resources.user import User
 from api.resources.message import Message
+from api.resources.emotion import Emotion
 
 app.register_blueprint(login_blueprint)
 api.add_resource(User, "/users")
 api.add_resource(Message, "/messages")
+api.add_resource(Emotion, "/emotion")
+
 

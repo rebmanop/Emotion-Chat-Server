@@ -54,7 +54,7 @@ class Message(Resource):
 
         db.session.commit()
 
-        return 200
+        return {"status": 200}
 
 
 
