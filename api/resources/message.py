@@ -1,6 +1,7 @@
 import uuid
+
 import database
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, request
 from emoji_weights import EMOJI_WEIGHTS, get_content_weight
 from api import db
 
@@ -55,6 +56,24 @@ class Message(Resource):
         db.session.commit()
 
         return {"status": 200}
+
+    
+    def get(self):
+
+        args = request.args
+        
+        messages = database.Message.query.filter_by(sender_login=args.get("current_user_login"), receiver_login=args.get("other_user_login")).all()
+        messages += database.Message.query.filter_by(sender_login=args.get("other_user_login"), receiver_login=args.get("current_user_login")).all()
+
+        contents = []
+        for message in messages:
+            contents.append(message.content)
+
+        return {"messages": contents}
+
+
+
+
 
 
 
