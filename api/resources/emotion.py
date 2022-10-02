@@ -1,18 +1,14 @@
-from unittest.main import MAIN_EXAMPLES
-import database
-from flask_restful import Resource, reqparse
-from emoji_weights import EMOJI_WEIGHTS
 import math
+import database
+from flask_restful import Resource, reqparse, request
+from emoji_weights import EMOJI_WEIGHTS
 
 class Emotion(Resource):
+    
     def get(self):
-        
-        parser = reqparse.RequestParser()
-        parser.add_argument("login", type=str, help="Login is required", required=True)
-
-        args = parser.parse_args()
-
-        user = database.User.query.filter_by(login=args["login"]).first()
+        args = request.args
+        login = args.get("login")
+        user = database.User.query.filter_by(login=login).first()
 
         x_user = user.mood_coefficient
         y_user = user.calmness_coefficient

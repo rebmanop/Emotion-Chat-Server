@@ -4,8 +4,6 @@ import database
 
 class Chat(Resource):
     def get(self):
-            """get chats for the user"""
-
             args = request.args
             login = args.get("login")
 
