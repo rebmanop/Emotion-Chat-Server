@@ -1,3 +1,4 @@
+from email.policy import default
 import database
 from flask_restful import Resource, reqparse
 from flask import request
@@ -19,14 +20,12 @@ class User(Resource):
         user = database.User.query.filter_by(login=args["login"]).first()
 
         if user and args["password"] != user.password:
-            print("user exist incorrect")
             return {"status": 401}
         elif user and args["password"] == user.password:
-            print("user exist correct")
             return {"status": 200}
 
         new_user = database.User(id=str(uuid.uuid4()), login=args["login"], password=args["password"], mood_coefficient=50, calmness_coefficient=50)
-        print("created_new")
+        
         db.session.add(new_user)
         db.session.commit()
 
@@ -34,24 +33,26 @@ class User(Resource):
 
 
     def get(self):
-        """get chats for the user"""
-
         args = request.args
         login = args.get("login")
-
-        chats_with_users = set()
-        message_list = database.Message.query.filter_by(sender_login=login).all()
-        message_list += database.Message.query.filter_by(receiver_login=login).all()
-
-        for message in message_list:
-            chats_with_users.add(message.sender_login)
-            chats_with_users.add(message.receiver_login)
+        other_login = args.get("other_login")
 
 
-        chats_with_users.remove(login)
-        chats_with_users = list(chats_with_users)
+        user = database.User.query.filter_by(login=other_login).first()
 
-        return {"chats": chats_with_users}
+        if user:
+            #default_message = database.Message(id=str(uuid.uuid4()), 
+            #content="U+1F610", receiver_login=other_login, sender_login=login)
+
+            #db.session.add(default_message)
+            #db.session.commit()
+            return {"status": 200}
+
+        return {"status": 404}
+
+
+
+
 
 
 
